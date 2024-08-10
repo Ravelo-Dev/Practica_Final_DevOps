@@ -1,53 +1,48 @@
-# ansible/playbook.yml
-- name: Instalar Apache
-  hosts: all
-  become: yes
+---
+- hosts: all
+  become: true
+
   tasks:
     - name: Instalar Apache2
       apt:
         name: apache2
+        state: present
+        update_cache: yes
 
     - name: Iniciar y habilitar Apache
-      service:
+      systemd:
         name: apache2
-        state: started
         enabled: yes
+        state: started
 
-    - name: Copiar archivos
+    - name: Copiar archivo index.html al directorio de Apache
       copy:
-        src: ../index.html
-        dest: /var/www/html/
+        src: "/vagrant/index.html"
+        dest: "/var/www/html/index.html"
+        mode: '0644'
+        owner: "www-data"
+        group: "www-data"
 
-    - name: Crear directorio para CSS
-      file:
-        path: /var/www/html/css
-        state: directory
-        mode: '0755'
-
-    - name: Copiar archivos CSS
+    - name: Copiar carpeta css al directorio de Apache
       copy:
-        src: ../css/styles.css
-        dest: /var/www/html/css/
+        src: "/vagrant/css/"
+        dest: "/var/www/html/css/"
         mode: '0755'
-        remote_src: yes
+        owner: "www-data"
+        group: "www-data"
 
-    - name: Crear directorio para js
-      file:
-        path: /var/www/html/js
-        state: directory
-        mode: '0755'
-
-    - name: Copiar archivos js
+    - name: Copiar carpeta js al directorio de Apache
       copy:
-        src: ../js/scripts.js
-        dest: /var/www/html/js/
+        src: "/vagrant/js/"
+        dest: "/var/www/html/js/"
         mode: '0755'
-        remote_src: yes    
+        owner: "www-data"
+        group: "www-data"
 
-    - name: Crear directorio para assets
-      file:
-        path: /var/www/html/assets
-        state: directory
+    - name: Copiar carpeta assets al directorio de Apache
+      copy:
+        src: "/vagrant/assets/"
+        dest: "/var/www/html/assets/"
         mode: '0755'
-
-     
+        owner: "www-data"
+        group: "www-data"
